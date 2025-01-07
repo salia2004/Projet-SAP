@@ -1,4 +1,13 @@
 import socket
+from fonctionnalites import *
+
+
+
+
+
+
+
+
 
 def serveur():
     # Création du socket
@@ -32,7 +41,7 @@ def serveur():
 if __name__ == "__main__":
     serveur()
 
-
+#fonctionnalitet des socket 
 #accept()                               : accepte une connexion, retourne un nouveau socket et une adresse client 
 #bind(addr)                             : associe le socket à une adresse locale
 #close()                                : ferme le socket
