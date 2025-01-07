@@ -1,6 +1,37 @@
 import socket as s
 
 
+class Donnee:
+    def __init__(self, nom, prenom, identifiant, email, mdp, telephone, adresse, information):
+        self.nom = nom  # Nom de l'utilisateur
+        self.prenom = prenom  # Prénom de l'utilisateur
+        self.identifiant = identifiant  # Identifiant unique
+        self.email = email  # Adresse e-mail
+        self.mdp = mdp  # Mot de passe
+        self.telephone = telephone  # Numéro de téléphone
+        self.adresse = adresse  # Adresse postale
+        self.information = information  # Liste d'informations supplémentaires
+
+    def __repr__(self):
+        return (f"Donnee(nom={self.nom}, prenom={self.prenom}, identifiant={self.identifiant}, "
+                f"email={self.email}, mdp={self.mdp}, telephone={self.telephone}, "
+                f"adresse={self.adresse}, information={self.information})")
+
+
+class Requete:
+    def __init__(self, type_message, type_action, identifiant, donnee, code_erreur):
+        self.type_message = type_message  # Type du message (ex : "Requête")
+        self.type_action = type_action  # Action à effectuer (ex : "Recherche", "Création")
+        self.identifiant = identifiant  # Identifiant de la requête
+        self.donnee = donnee  # Instance de la classe Donnee
+        self.code_erreur = code_erreur  # Code d'erreur éventuel ("0" si tout va bien)
+
+    def __repr__(self):
+        return (f"Requete(type_message={self.type_message}, type_action={self.type_action}, "
+                f"identifiant={self.identifiant}, donnee={self.donnee}, code_erreur={self.code_erreur})")
+
+
+
 
 """
 Fonctionnalité recherche_contact 
@@ -22,13 +53,6 @@ def afficher_menu():
     return choix
 
 
-class Requete:
-    def __init__(self, action, nom, prenom):
-        self.type_action = action
-        self.nom = nom
-        self.prenom = prenom
-
-
 """
 Fonctionnalité recherche_contact 
 Objectif: Permet a un utilisateur de rechercher un contact de son annuaire en reseingnant les information du contact (Nom et Prenom)
@@ -41,7 +65,7 @@ Auteur: Fatoumata Salia Traore
 def recherche_contact(Nom, Prenom, socket):
     try:
         # Création du message de requête pour la recherche de contact
-        requete = Requete(type_action="recherche_contact", nom="Dupont", prenom="Jean")
+        requete = Requete()
 
         # Envoi de la requête au serveur via le socket
         socket.sendall(str(requete).encode('utf-8'))
