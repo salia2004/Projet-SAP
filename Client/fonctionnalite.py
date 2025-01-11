@@ -131,3 +131,51 @@ def recherche_contact(Nom, Prenom, socket,id):
     except Exception as e:
         print(f"Erreur lors de la recherche du contact : {e}")
         return None
+    
+"""
+Fonctionnalité AJOUTER_CONTACT
+Objectif: Permet à un utilisateur d'ajouter un nouveau contact à son annuaire.
+Paramètres:
+    socket : socket
+    id : identifiant de l'utilisateur connecté
+"""
+def ajouter_contact(socket, id):
+    try:
+        # Collecte des informations du contact à ajouter
+        print("\n--- Ajouter un contact ---")
+        nom = input("Nom : ")
+        prenom = input("Prénom : ")
+        email = input("Email : ")
+        adresse_postale = input("Adresse postale : ")
+        numero_telephone = input("Numéro de téléphone : ")
+
+        # Création de la requête à envoyer au serveur
+        requete = {
+            "type_message": "requete",
+            "type_action": "AJOUTER_CONTACT",
+            "identifiant": id,
+            "donnee": {
+                "nom": nom,
+                "prenom": prenom,
+                "email": email,
+                "adresse_postale": adresse_postale,
+                "numero_telephone": numero_telephone
+            },
+            "code_erreur": None
+        }
+
+        # Envoi de la requête au serveur
+        socket.sendall(json.dumps(requete).encode('utf-8'))
+
+        # Réception de la réponse du serveur
+        reponse_data = socket.recv(1024).decode('utf-8')
+        reponse = json.loads(reponse_data)
+
+        # Traitement de la réponse
+        if reponse["code_erreur"] == "0":
+            print("Contact ajouté avec succès !")
+        else:
+            message_erreur = interprete_code_erreur(int(reponse["code_erreur"]))
+            print(f"Erreur ({reponse['code_erreur']}) : {message_erreur}")
+    except Exception as e:
+        print(f"Erreur lors de l'ajout du contact : {e}")

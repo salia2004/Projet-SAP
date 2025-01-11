@@ -44,6 +44,69 @@ Objectif : Analyser et traiter une requête reçue du client en fonction de son 
     :return: Réponse sous forme de chaîne JSON.
 """
 
+"""
+Fonctionnalité : AJOUT_CONTACT
+Objectif : Ajouter un nouveau contact dans l'annuaire d'un utilisateur spécifique.
+Auteur : [MAIGA Aminata Alidji]
+"""
+def ajouter_contact(data, annuaire):
+    """
+    Ajoute un contact à l'annuaire d'un utilisateur.
+
+    :param data: Requête contenant les informations du contact à ajouter.
+    :param annuaire: Liste représentant l'annuaire complet.
+    :return: Réponse sous forme de dictionnaire.
+    """
+    try:
+        # Extraire les données de la requête
+        id_utilisateur = data['identifiant']
+        contact = data['donnee']
+
+        # Vérifier si l'utilisateur existe dans l'annuaire
+        utilisateur = next((user for user in annuaire if user['Id'] == id_utilisateur), None)
+        if not utilisateur:
+            return {
+                "type_message": "reponse",
+                "type_action": "AJOUT_CONTACT",
+                "code_erreur": 409,  # Utilisateur non trouvé
+                "donnee": None
+            }
+
+        # Vérifier si le contact existe déjà dans l'annuaire de l'utilisateur
+        for c in utilisateur['Annuaire_contact']:
+            if c['Email'] == contact['email']:
+                return {
+                    "type_message": "reponse",
+                    "type_action": "AJOUT_CONTACT",
+                    "code_erreur": 403,  # Contact déjà présent
+                    "donnee": None
+                }
+
+        # Ajouter le contact à l'annuaire
+        utilisateur['Annuaire_contact'].append(contact)
+
+        # Sauvegarder les modifications dans le fichier JSON
+        sauvegarder_annuaire(annuaire)
+
+        return {
+            "type_message": "reponse",
+            "type_action": "AJOUT_CONTACT",
+            "code_erreur": "0",  # Pas d'erreur
+            "donnee": contact
+        }
+
+    except Exception as e:
+        print(f"Erreur lors de l'ajout du contact : {e}")
+        return {
+            "type_message": "reponse",
+            "type_action": "AJOUT_CONTACT",
+            "code_erreur": 400,  # Requête mal formulée
+            "donnee": None
+        }
+
+
+
+
 def traiter_requete(data, annuaire):
     import json
 
@@ -123,8 +186,8 @@ def traiter_requete(data, annuaire):
             return None
         
         elif requete['type_action'].upper() == "AJOUT_CONTACT":
-            #TRAITEMENT AMMINATA
-            return None
+             # Traiter une requête d'ajout de contact
+            return json.dumps(ajouter_contact(requete, annuaire))
         #Maybe faire un dernier elif porules autre cas et dire genre focnitonnaliter indissponible 
 
         # Si l'action n'est pas reconnue
