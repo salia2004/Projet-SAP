@@ -1,59 +1,67 @@
 import socket
+import threading
+import json
+from fonctionnalites import traiter_requete, charger_annuaire, sauvegarder_annuaire
 
-def serveur():
-    # Création du socket
-    serveur_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    hote = '127.0.0.1'  # Adresse IP locale
-    port = 12345  # Port sur lequel le serveur écoute
+# Configuration du serveur
+HOTE = '127.0.0.1'  # Adresse IP du serveur
+PORT = 12345        # Port du serveur
+TAILLE_BUFFER = 1024  # Taille du buffer pour les messages
 
-    # Liaison du socket à l'adresse et au port
-    serveur_socket.bind((hote, port))
-    # Le serveur peut accepter jusqu'à 5 connexions
-    serveur_socket.listen(5)  
-    print(f"Serveur en attente de connexion sur {hote}:{port}...")
+# Chargement de l'annuaire (par exemple, à partir d'un fichier JSON)
+annuaire = charger_annuaire()
 
+def gerer_client(client_socket, adresse_client):
+    """
+    Gère la communication avec un client spécifique.
+    """
+    print(f"Connexion établie avec {adresse_client}")
+    try:
+        while True:
+            # Réception de la requête du client
+            data = client_socket.recv(TAILLE_BUFFER).decode('utf-8')
+            if not data:  # Si aucune donnée reçue, déconnexion
+                break
 
-    while True:
-        client_socket, adresse_client = serveur_socket.accept()
-        print(f"Connexion acceptée de {adresse_client}")
+            print(f"Requête reçue de {adresse_client} : {data}")
+            
+            # Traitement de la requête
+            reponse = traiter_requete(data, annuaire)
+            print("Envoi de la response...")
+            # Envoi de la réponse au client
+            client_socket.sendall(reponse.encode('utf-8'))
 
-        # Rception d'une réponse au client
-        message = client_socket.recv(1024).decode('utf-8')
-        print(f"Message reçu du client : {message}")
-
-
-
-        # Envoi d'une réponse au client
-        client_socket.send("Message reçu avec succès".encode('utf-8'))
-
-        # Fermeture de la connexion avec le client
+            #traiter le cas de deconnection de la par du client ici ausi
+    except Exception as e:
+        print(f"Erreur avec le client {adresse_client} : {e}")
+    finally:
+        print(f"Déconnexion du client {adresse_client}")
         client_socket.close()
 
+def demarrer_serveur():
+    """
+    Démarre le serveur et accepte les connexions entrantes.
+    """
+    serveur_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    serveur_socket.bind((HOTE, PORT))
+    serveur_socket.listen(5)  # Le serveur peut gérer jusqu'à 5 connexions en file d'attente
+    print(f"Serveur démarré sur {HOTE}:{PORT}")
+
+    try:
+        while True:
+            # Acceptation d'une nouvelle connexion client
+            client_socket, adresse_client = serveur_socket.accept()
+            print(f"Nouveau client connecté : {adresse_client}")
+
+            # Gestion du client dans un thread séparé
+            thread_client = threading.Thread(target=gerer_client, args=(client_socket, adresse_client))
+            thread_client.start()
+    except KeyboardInterrupt:
+        print("Arrêt du serveur.")
+    finally:
+        # Sauvegarde de l'annuaire avant l'arrêt du serveur
+        sauvegarder_annuaire(annuaire) #implementer dans fonctionnaliter 
+        serveur_socket.close()
+
 if __name__ == "__main__":
-    serveur()
-
-
-#accept()                               : accepte une connexion, retourne un nouveau socket et une adresse client 
-#bind(addr)                             : associe le socket à une adresse locale
-#close()                                : ferme le socket
-#connect(addr)                          : connecte le socket à une adresse distante 
-#connect_ex(addr)                       : connect, retourne un code erreur au lieu d'une exception
-#dup()                                  : retourne un nouveau objet socket identique à celui en cours
-#fileno()                               : retourne une description du fichier
-#getpeername()                          : retourne l'adresse distante
-#getsockname()                          : retourne l'adresse locale
-#getsockopt(level, optname[, buflen])   : retourne les options du socket
-#gettimeout()                           : retourne le timeout ou none
-#listen(n)                              : commence à écouter les connexions entrantes
-#makefile([mode, [bufsize]])            : retourne un fichier objet pour le socket
-#recv(buflen[, flags])                  : recoit des données
-#recv_into(buffer[, nbytes[, flags]])   : recoit des données (dans un buffer)
-#recvfrom(buflen[, flags])              : reçoit des données et l'adresse de l'envoyeur
-#recvfrom_into(buffer[,nbytes,[,flags]) : reçoit des données et l'adresse de l'envoyeur (dans un buffer)
-#sendall(data[, flags])                 : envoye toutes les données
-#send(data[, flags])                    : envoye des données mais il se peut que pas toutes le soit
-#sendto(data[, flags], addr)            : envoye des données à une adresse donnée
-#setblocking(0 | 1)                     : active ou désactive le blocage le flag I/O
-#setsockopt(level, optname, value)      : définit les options du socket
-#settimeout(None | float)               : active ou désactive le timeout
-#shutdown(how) 
+    demarrer_serveur()
