@@ -1,4 +1,4 @@
-#Ce programe sert a initaliser l'annnuaire au prea
+#Ce programe sert a initaliser l'annnuaire au preable 
 
 import random
 import string
@@ -29,7 +29,7 @@ def generer_json():
 
     utilisateurs = []
 
-    for i in range(2, 102):
+    for i in range(2, 10):
         nom = random.choice(noms)
         prenom = random.choice(prenoms)
         email = f"{nom.lower()}.{prenom.lower()}@annuaire.com"

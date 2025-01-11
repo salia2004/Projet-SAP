@@ -1,44 +1,17 @@
 import socket as s
-
-
-class Donnee:
-    def __init__(self, nom, prenom, identifiant, email, mdp, telephone, adresse, information):
-        self.nom = nom  # Nom de l'utilisateur
-        self.prenom = prenom  # Prénom de l'utilisateur
-        self.identifiant = identifiant  # Identifiant unique
-        self.email = email  # Adresse e-mail
-        self.mdp = mdp  # Mot de passe
-        self.telephone = telephone  # Numéro de téléphone
-        self.adresse = adresse  # Adresse postale
-        self.information = information  # Liste d'informations supplémentaires
-
-    def __repr__(self):
-        return (f"Donnee(nom={self.nom}, prenom={self.prenom}, identifiant={self.identifiant}, "
-                f"email={self.email}, mdp={self.mdp}, telephone={self.telephone}, "
-                f"adresse={self.adresse}, information={self.information})")
-
-
-class Requete:
-    def __init__(self, type_message, type_action, identifiant, donnee, code_erreur):
-        self.type_message = type_message  # Type du message (ex : "Requête")
-        self.type_action = type_action  # Action à effectuer (ex : "Recherche", "Création")
-        self.identifiant = identifiant  # Identifiant de la requête
-        self.donnee = donnee  # Instance de la classe Donnee
-        self.code_erreur = code_erreur  # Code d'erreur éventuel ("0" si tout va bien)
-
-    def __repr__(self):
-        return (f"Requete(type_message={self.type_message}, type_action={self.type_action}, "
-                f"identifiant={self.identifiant}, donnee={self.donnee}, code_erreur={self.code_erreur})")
-
-
-
-
-"""
-Fonctionnalité recherche_contact 
-Objectif: affiche un menu au client, prends son choix en entree et le retourne
-Parametre:
-Auteur: Fatoumata Salia Traore 
-"""
+import json
+#------------------------------------------------------
+#------------------------------------------------------
+def demander_identifiants():
+    identifiant = input("Email : ")
+    mot_de_passe = input("Mot de passe : ")
+    return identifiant, mot_de_passe
+def afficher_menu_initial():
+    print(" ------ Menu Initial ------ \n\n")
+    print("1- Créer un compte")
+    print("2- Se connecter à un compte")
+    choix = int(input("Veuillez renseigner votre choix : "))
+    return choix
 def afficher_menu():
     print(" ------ Menu principale ------ \n\n")
     print("1- Ajouter un contact à mon annuaire")
@@ -51,7 +24,63 @@ def afficher_menu():
     print("8- Deconnexion")
     choix=int(input("Veuillez renseignez votre choix : "))
     return choix
+#------------------------------------------------------
+#------------------------------------------------------
+def interprete_code_erreur(code):
+    codes_erreurs = {
+        400: "Requête mal formulée.",
+        401: "Authentification requise.",
+        402: "Informations obligatoires manquantes.",
+        403: "Contact déjà présent dans l’annuaire.",
+        404: "Contact non trouvé.",
+        405: "Adresse mail déjà présente.",
+        406: "Identifiants incorrects.",
+        407: "Mot de passe incorrect.",
+        408: "Accès refusé.",
+        409: "Utilisateur non trouvé."
+    }
+    return codes_erreurs.get(code, "Erreur inconnue.")
 
+"""
+Fonctionnalité CONNEXION
+Objectif: Permet a un utilisateur de se connecter a son compte en renseignant ses addresse mail et sont mdp
+"""
+def connexion_compte(client_socket):
+    fin = False
+    compteur=0 # 2 tentative autoriser
+    while not fin and compteur<2:
+        # Collecter les informations de l'utilisateur
+        email, mot_de_passe = demander_identifiants()
+
+       # Création de la requête directement en dictionnaire
+        requete = {
+            "type_message": "requete",
+            "type_action": "CONNEXION",
+            "identifiant": None,
+            "donnee": {
+                "email": email,
+                "mdp": mot_de_passe
+            },
+            "code_erreur": None
+        }
+        client_socket.sendall(json.dumps(requete).encode('utf-8'))
+
+        reponse_data = client_socket.recv(1024).decode('utf-8')
+        reponse = json.loads(reponse_data)
+
+        # Traiter la réponse reçue
+        if reponse["code_erreur"] == "0":
+            print("Connexion établie avec succès.")
+            id=reponse["donnee"]["id"]
+            fin = True
+        else:
+            message_erreur = interprete_code_erreur(int(reponse["code_erreur"]))
+            print(f"Erreur ({reponse["code_erreur"] }) : {message_erreur}")
+            print("Veuillez reessayer")
+            compteur=compteur+1
+    if compteur>=3:
+        return False," "
+    return fin,id
 
 """
 Fonctionnalité recherche_contact 
@@ -62,54 +91,31 @@ Parametre:
     socket : socket 
 Auteur: Fatoumata Salia Traore 
 """
-def recherche_contact(Nom, Prenom, socket):
-    try:
-        # Création du message de requête pour la recherche de contact
-        requete = Requete()
 
+def recherche_contact(Nom, Prenom, socket,id):
+    try:
+        # Création de la requete
+        requete = {
+            "type_message": "requete",
+            "type_action": "CONSULTER_CONTACT",
+            "identifiant": id,
+            "donnee": {
+                "nom": Nom,
+                "prenom": Prenom
+            },
+            "code_erreur": None
+        }
+    
         # Envoi de la requête au serveur via le socket
-        socket.sendall(str(requete).encode('utf-8'))
+        socket.sendall(json.dumps(requete).encode('utf-8'))
 
         # Réception de la réponse du serveur
-        reponse = socket.recv(1024).decode('utf-8')
-
-        # Traitement de la réponse
-        if reponse:
-            print("Résultat de la recherche :", reponse)
-            return reponse
-        else:
-            print("Aucun contact trouvé.")
-            return None
+        reponse_data = socket.recv(1024).decode('utf-8')
+        reponse = json.loads(reponse_data) 
+        return reponse
     except Exception as e:
         print(f"Erreur lors de la recherche du contact : {e}")
         return None
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#Partie test
-if __name__=="__main__":
-    q="maman"
-
-    print(q[0])
-
-
 """
 #Strcuture :
 
@@ -134,5 +140,4 @@ if __name__=="__main__":
         #metre en place le fichier json (remplir au prealable)
         #-connection via socket
         #main dans leque on va tout bien afficher avec des appel de focntion de util
-
 """
