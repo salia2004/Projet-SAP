@@ -27,9 +27,9 @@ def gerer_client(client_socket, adresse_client):
             
             # Traitement de la requête
             reponse = traiter_requete(data, annuaire)
-
+            print("Envoi de la response...")
             # Envoi de la réponse au client
-            client_socket.sendall(json.dumps(reponse).encode('utf-8'))
+            client_socket.sendall(reponse.encode('utf-8'))
 
             #traiter le cas de deconnection de la par du client ici ausi
     except Exception as e:

@@ -24,6 +24,18 @@ def afficher_menu():
     print("8- Deconnexion")
     choix=int(input("Veuillez renseignez votre choix : "))
     return choix
+
+"""
+Affiche les informations d'un contact de manière claire et structurée.
+    :param contact: Dictionnaire contenant les informations d'un contact.
+"""
+def afficher_info(contact):
+    print("\n------ Informations du Contact ------")
+    print(f"Nom                : {contact.get('Nom', 'Non spécifié')}")
+    print(f"Prénom             : {contact.get('Prenom', 'Non spécifié')}")
+    print(f"Email              : {contact.get('Email', 'Non spécifié')}")
+    print(f"Adresse postale    : {contact.get('Adresse postale', 'Non spécifié')}")
+    print(f"Numéro de téléphone: {contact.get('Numéro de téléphone', 'Non spécifié')}\n")
 #------------------------------------------------------
 #------------------------------------------------------
 def interprete_code_erreur(code):

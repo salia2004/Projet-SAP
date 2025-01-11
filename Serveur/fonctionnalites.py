@@ -65,7 +65,6 @@ def traiter_requete(data, annuaire):
                     "code_erreur": 409,  # Utilisateur non trouvé
                     "donnee": None
                 })
-            print(utilisateur)
             if utilisateur['Information']['Mdp'] != mdp:
                 return json.dumps({
                     "type_message": "reponse",

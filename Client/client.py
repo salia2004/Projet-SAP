@@ -23,6 +23,7 @@ def client():
                     continue
             elif choix_initial == 2:
                 res,id=connexion_compte(client_socket)
+                print(res)
                 if res:
                     #CONNEXION CLIENT 
                     id_client=id
@@ -51,11 +52,11 @@ def client():
 
                 print("Vous voulez consulter les information d'un contact de votre annuaire:")
                 Nom=str(input("Veuillez saisir son nom :"))
-                Prenom=str(input("Veuillew saisir son prenom :"))
+                Prenom=str(input("Veuillez saisir son prenom :"))
                 reponse=recherche_contact(Nom, Prenom, client_socket,id)#emmagasiner l'id dans le code
                  # Traiter la réponse reçue
                 if reponse["code_erreur"] == "0":
-                    print(reponse["donnee"])#peut etre mettre une fonction d'affcihage 
+                    afficher_info(reponse["donnee"])
                 else:
                     message_erreur = interprete_code_erreur(int(reponse["code_erreur"]))
                     print(f"Erreur ({reponse["code_erreur"]}) : {message_erreur}")

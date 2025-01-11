@@ -12,20 +12,6 @@
         "Utilisateurs_autorise": [],
         "Annuaire_contact": [
             {
-                "Nom": "Dubois",
-                "Prenom": "Sarah",
-                "Email": "konaté.balla@contact.com",
-                "Adresse postale": "200 place du Capitole, Lille, 34838",
-                "Numéro de téléphone": "0662226024"
-            },
-            {
-                "Nom": "Bonneau",
-                "Prenom": "Yves",
-                "Email": "bonneau.balla@contact.com",
-                "Adresse postale": "49 chemind de dardagna, Bordeaux, 15992",
-                "Numéro de téléphone": "0671004575"
-            },
-            {
                 "Nom": "Traore",
                 "Prenom": "Fatoumata",
                 "Email": "konaté.kevin@contact.com",
@@ -80,27 +66,6 @@
                 "Email": "konaté.amina@contact.com",
                 "Adresse postale": "14 place du Capitole, Toulouse, 93442",
                 "Numéro de téléphone": "0659694309"
-            },
-            {
-                "Nom": "Didiane",
-                "Prenom": "Amina",
-                "Email": "bonneau.fatoumata@contact.com",
-                "Adresse postale": "97 chemind de dardagna, Toulouse, 11256",
-                "Numéro de téléphone": "0656264096"
-            },
-            {
-                "Nom": "Traore",
-                "Prenom": "Sarah",
-                "Email": "bonneau.fatoumata@contact.com",
-                "Adresse postale": "35 avenue de Lyon, Paris, 33958",
-                "Numéro de téléphone": "0695593968"
-            },
-            {
-                "Nom": "Konaté",
-                "Prenom": "Aminata",
-                "Email": "traore.amina@contact.com",
-                "Adresse postale": "59 rue de Paris, Bordeaux, 27082",
-                "Numéro de téléphone": "0623909368"
             }
         ]
     },
@@ -122,41 +87,6 @@
                 "Email": "bonneau.fatoumata@contact.com",
                 "Adresse postale": "172 avenue de Lyon, Marseille, 77046",
                 "Numéro de téléphone": "0674473438"
-            },
-            {
-                "Nom": "Didiane",
-                "Prenom": "Abdel",
-                "Email": "traore.yves@contact.com",
-                "Adresse postale": "137 chemin des Écoliers, Lille, 44526",
-                "Numéro de téléphone": "0634328779"
-            },
-            {
-                "Nom": "Bonneau",
-                "Prenom": "Balla",
-                "Email": "traore.fatoumata@contact.com",
-                "Adresse postale": "170 chemind de dardagna, Lille, 97513",
-                "Numéro de téléphone": "0693594303"
-            },
-            {
-                "Nom": "Bonneau",
-                "Prenom": "Balla",
-                "Email": "dupont.abdel@contact.com",
-                "Adresse postale": "157 chemin des Écoliers, Bordeaux, 16561",
-                "Numéro de téléphone": "0613784756"
-            },
-            {
-                "Nom": "Traore",
-                "Prenom": "Abdel",
-                "Email": "dupont.abdel@contact.com",
-                "Adresse postale": "99 chemind de dardagna, Toulouse, 15244",
-                "Numéro de téléphone": "0634589284"
-            },
-            {
-                "Nom": "Didiane",
-                "Prenom": "Aminata",
-                "Email": "dubois.fatoumata@contact.com",
-                "Adresse postale": "110 rue de Paris, Paris, 29942",
-                "Numéro de téléphone": "0692508305"
             },
             {
                 "Nom": "Didiane",
@@ -194,34 +124,6 @@
                 "Numéro de téléphone": "0692870090"
             },
             {
-                "Nom": "Konaté",
-                "Prenom": "Yves",
-                "Email": "konaté.yves@contact.com",
-                "Adresse postale": "26 place du Capitole, Marseille, 69483",
-                "Numéro de téléphone": "0692109489"
-            },
-            {
-                "Nom": "Didiane",
-                "Prenom": "Sarah",
-                "Email": "konaté.aminata@contact.com",
-                "Adresse postale": "169 rue de Paris, Paris, 74810",
-                "Numéro de téléphone": "0638555419"
-            },
-            {
-                "Nom": "Didiane",
-                "Prenom": "Fatoumata",
-                "Email": "traore.abdel@contact.com",
-                "Adresse postale": "175 place du Capitole, Nice, 97170",
-                "Numéro de téléphone": "0636533284"
-            },
-            {
-                "Nom": "Bonneau",
-                "Prenom": "Aminata",
-                "Email": "didiane.yves@contact.com",
-                "Adresse postale": "105 place du Capitole, Paris, 20706",
-                "Numéro de téléphone": "0611194946"
-            },
-            {
                 "Nom": "Dupont",
                 "Prenom": "Aminata",
                 "Email": "dupont.sarah@contact.com",
@@ -255,29 +157,7 @@
             "Mdp": "sL!_@tg>4I'J"
         },
         "Utilisateurs_autorise": [],
-        "Annuaire_contact": [
-            {
-                "Nom": "Traore",
-                "Prenom": "Sarah",
-                "Email": "traore.abdel@contact.com",
-                "Adresse postale": "196 boulevard Saint-Michel, Lille, 58741",
-                "Numéro de téléphone": "0637608986"
-            },
-            {
-                "Nom": "Dupont",
-                "Prenom": "Aminata",
-                "Email": "konaté.kevin@contact.com",
-                "Adresse postale": "173 rue de Paris, Bordeaux, 64074",
-                "Numéro de téléphone": "0657848072"
-            },
-            {
-                "Nom": "Didiane",
-                "Prenom": "Abdel",
-                "Email": "dupont.balla@contact.com",
-                "Adresse postale": "188 chemin des Écoliers, Nice, 82898",
-                "Numéro de téléphone": "0660665954"
-            },
-            {
+        "Annuaire_contact": [{
                 "Nom": "Konaté",
                 "Prenom": "Abdel",
                 "Email": "didiane.yves@contact.com",
@@ -298,41 +178,6 @@
         },
         "Utilisateurs_autorise": [],
         "Annuaire_contact": [
-            {
-                "Nom": "Dubois",
-                "Prenom": "Sarah",
-                "Email": "dubois.yves@contact.com",
-                "Adresse postale": "95 place du Capitole, Bordeaux, 29951",
-                "Numéro de téléphone": "0671737577"
-            },
-            {
-                "Nom": "Konaté",
-                "Prenom": "Sarah",
-                "Email": "traore.kevin@contact.com",
-                "Adresse postale": "194 chemind de dardagna, Toulouse, 84617",
-                "Numéro de téléphone": "0670739257"
-            },
-            {
-                "Nom": "Traore",
-                "Prenom": "Sarah",
-                "Email": "traore.sarah@contact.com",
-                "Adresse postale": "117 rue de Paris, Lyon, 37487",
-                "Numéro de téléphone": "0641374540"
-            },
-            {
-                "Nom": "Konaté",
-                "Prenom": "Amina",
-                "Email": "didiane.sarah@contact.com",
-                "Adresse postale": "29 chemin des Écoliers, Lille, 73994",
-                "Numéro de téléphone": "0697270116"
-            },
-            {
-                "Nom": "Dubois",
-                "Prenom": "Fatoumata",
-                "Email": "bonneau.amina@contact.com",
-                "Adresse postale": "185 boulevard Saint-Michel, Nice, 27989",
-                "Numéro de téléphone": "0645738925"
-            },
             {
                 "Nom": "Bonneau",
                 "Prenom": "Amina",
@@ -383,13 +228,6 @@
                 "Numéro de téléphone": "0693901249"
             },
             {
-                "Nom": "Didiane",
-                "Prenom": "Abdel",
-                "Email": "traore.balla@contact.com",
-                "Adresse postale": "196 chemind de dardagna, Nice, 84448",
-                "Numéro de téléphone": "0621728033"
-            },
-            {
                 "Nom": "Dubois",
                 "Prenom": "Amina",
                 "Email": "dupont.balla@contact.com",
@@ -409,22 +247,7 @@
             "Mdp": "cvn@SrQNZi4e"
         },
         "Utilisateurs_autorise": [],
-        "Annuaire_contact": [
-            {
-                "Nom": "Dubois",
-                "Prenom": "Abdel",
-                "Email": "dubois.aminata@contact.com",
-                "Adresse postale": "150 chemin des Écoliers, Lille, 31748",
-                "Numéro de téléphone": "0662061399"
-            },
-            {
-                "Nom": "Traore",
-                "Prenom": "Sarah",
-                "Email": "konaté.abdel@contact.com",
-                "Adresse postale": "126 chemin des Écoliers, Lille, 72867",
-                "Numéro de téléphone": "0611288372"
-            },
-            {
+        "Annuaire_contact": [{
                 "Nom": "Konaté",
                 "Prenom": "Amina",
                 "Email": "bonneau.fatoumata@contact.com",
