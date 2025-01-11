@@ -1,5 +1,6 @@
-#Ce programe sert a initaliser l'annnuaire au preable 
-
+"""
+Ce programe sert a initaliser l'annnuaire au preable afin d'effectue  les test
+"""
 import random
 import string
 import json

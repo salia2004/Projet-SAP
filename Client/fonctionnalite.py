@@ -1,6 +1,7 @@
 import socket as s
 import json
 #------------------------------------------------------
+#---- Fonctions d'affichage 
 #------------------------------------------------------
 def demander_identifiants():
     identifiant = input("Email : ")
@@ -38,6 +39,9 @@ def afficher_info(contact):
     print(f"Numéro de téléphone: {contact.get('Numéro de téléphone', 'Non spécifié')}\n")
 #------------------------------------------------------
 #------------------------------------------------------
+"""
+Permet a partir de la reponse envoyer par le serveur d'interpreter l'erreur
+"""
 def interprete_code_erreur(code):
     codes_erreurs = {
         400: "Requête mal formulée.",
@@ -103,7 +107,6 @@ Parametre:
     socket : socket 
 Auteur: Fatoumata Salia Traore 
 """
-
 def recherche_contact(Nom, Prenom, socket,id):
     try:
         # Création de la requete
@@ -128,28 +131,3 @@ def recherche_contact(Nom, Prenom, socket,id):
     except Exception as e:
         print(f"Erreur lors de la recherche du contact : {e}")
         return None
-"""
-#Strcuture :
-
-#-fichier client : Contenant tout ce que est relatif au client
-    #-Ulils.py : toute les fonction que les client va utiliser pous ses manip
-        #-Creation de compte
-        #-Recherche contact
-        #-Ajout Contact
-        #--autre petites fonction utilitaires
-    #client.py : connexion au serveur via les socket (en gros cpmme le main du client)
-        #-connection via socket #-connection  au compte client
-        #-affichage menu avant et apres connection (on pourrai le mettre dans utils)
-        #main dans leque on va tout bien afficher avec des appel de focntion de utils 
-
-#-fichier client :
-    #-Ulils.py : toute les fonction que les serveur va utiliser pous ses manip
-        #-Creation de compte
-        #-Recherche contact
-        #-Ajout Contact
-        #--autre petites fonction utilitaires
-    #serveur.py :connexion au serveur via les socket  (en gros cpmme le main du serveur)
-        #metre en place le fichier json (remplir au prealable)
-        #-connection via socket
-        #main dans leque on va tout bien afficher avec des appel de focntion de util
-"""
