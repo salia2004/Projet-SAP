@@ -2,7 +2,7 @@
 #Strcuture :
 
 #-fichier client : Contenant tout ce que est relatif au client
-    #-Ulils.py : toute les fonction que les client va utiliser pous ses manip
+    #-fonctionnalite.py : toute les fonction que les client va utiliser pous ses manip
         #-Creation de compte
         #-Recherche contact
         #-Ajout Contact
@@ -13,7 +13,7 @@
         #main dans leque on va tout bien afficher avec des appel de focntion de utils 
 
 #-fichier client :
-    #-Ulils.py : toute les fonction que les serveur va utiliser pous ses manip
+    #-fonctionnalite.py : toute les fonction que les serveur va utiliser pous ses manip
         #-Creation de compte
         #-Recherche contact
         #-Ajout Contact
