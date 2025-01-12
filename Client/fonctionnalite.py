@@ -170,7 +170,7 @@ def ajouter_contact(socket, id):
         # Création de la requête à envoyer au serveur
         requete = {
             "type_message": "requete",
-            "type_action": "AJOUTER_CONTACT",
+            "type_action": "AJOUT_CONTACT",
             "identifiant": id,
             "donnee": {
                 "nom": nom,

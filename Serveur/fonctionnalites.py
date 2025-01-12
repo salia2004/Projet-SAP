@@ -231,51 +231,41 @@ def ajouter_contact(data, annuaire):
     :param annuaire: Liste représentant l'annuaire complet.
     :return: Réponse sous forme de dictionnaire.
     """
-    try:
-        # Extraire les données de la requête
-        id_utilisateur = data.get("identifiant")
-        contact = data.get("donnee")
+    # Extraire les données de la requête
+    id_utilisateur = data.get("identifiant")
+    contact = data.get("donnee")
 
-        # Vérifier si l'utilisateur existe dans l'annuaire
-        utilisateur = next(
-            (user for user in annuaire if user["Id"] == id_utilisateur), None
-        )
-        if not utilisateur:
+    # Vérifier si l'utilisateur existe dans l'annuaire
+    utilisateur = next(
+        (user for user in annuaire if user["Id"] == id_utilisateur), None
+    )
+    if not utilisateur:
+        return {
+            "type_message": "reponse",
+            "type_action": "AJOUT_CONTACT",
+            "code_erreur": 409,  # Utilisateur non trouvé
+            "donnee": None,
+        }
+
+    # Vérifier si le contact existe déjà dans l'annuaire de l'utilisateur
+    for c in utilisateur["Annuaire_contact"]:
+        if c["Email"] == contact["email"]:
             return {
                 "type_message": "reponse",
                 "type_action": "AJOUT_CONTACT",
-                "code_erreur": 409,  # Utilisateur non trouvé
+                "code_erreur": 403,  # Contact déjà présent
                 "donnee": None,
             }
 
-        # Vérifier si le contact existe déjà dans l'annuaire de l'utilisateur
-        for c in utilisateur["Annuaire_contact"]:
-            if c["Email"] == contact["email"]:
-                return {
-                    "type_message": "reponse",
-                    "type_action": "AJOUT_CONTACT",
-                    "code_erreur": 403,  # Contact déjà présent
-                    "donnee": None,
-                }
+    # Ajouter le contact à l'annuaire
+    utilisateur["Annuaire_contact"].append(contact)
 
-        # Ajouter le contact à l'annuaire
-        utilisateur["Annuaire_contact"].append(contact)
+    # Sauvegarder les modifications dans le fichier JSON
+    sauvegarder_annuaire(annuaire)
 
-        # Sauvegarder les modifications dans le fichier JSON
-        sauvegarder_annuaire(annuaire)
-
-        return {
-            "type_message": "reponse",
-            "type_action": "AJOUT_CONTACT",
-            "code_erreur": "0",  # Pas d'erreur
-            "donnee": contact,
-        }
-
-    except Exception as e:
-        print(f"Erreur lors de l'ajout du contact : {e}")
-        return {
-            "type_message": "reponse",
-            "type_action": "AJOUT_CONTACT",
-            "code_erreur": 400,  # Requête mal formulée
-            "donnee": None,
-        }
+    return {
+        "type_message": "reponse",
+        "type_action": "AJOUT_CONTACT",
+        "code_erreur": "0",  # Pas d'erreur
+        "donnee": contact,
+    }
