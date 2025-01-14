@@ -37,8 +37,9 @@ Objectif : Sauvegarder l'annuaire actuel dans un fichier JSON afin de conserver 
 
 
 def sauvegarder_annuaire(annuaire, fichier="annuaire.json"):
+    chemin_fichier = os.path.join(os.path.dirname(__file__), fichier)
     try:
-        with open(fichier, "w", encoding="utf-8") as f:
+        with open(chemin_fichier, "w", encoding="utf-8") as f:
             json.dump(annuaire, f, ensure_ascii=False, indent=4)
             print("Annuaire sauvegardé avec succès.")
     except Exception as e:
@@ -188,6 +189,7 @@ def traiter_requete(data, annuaire):
                     "Nom": nom,
                     "Prenom": prenom,
                 },
+                "Utilisateurs_autorise": [],  # La liste des utilisateurs autorisé à la lecture est vide au début
                 "Annuaire_contact": [],  # L'annuaire de contacts de l'utilisateur est vide au début
             }
             annuaire.append(nouvel_utilisateur)
