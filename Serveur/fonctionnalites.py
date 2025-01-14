@@ -151,18 +151,31 @@ def traiter_requete(data, annuaire):
 
         elif requete["type_action"].upper() == "CREATION_COMPTE":
             # Traiter une requête de création utilisateur
-            email = requete["donnee"]["email"]
-            mdp = requete["donnee"]["mdp"]
-            nom = requete["donnee"]["nom"]
-            prenom = requete["donnee"]["prenom"]
+            informations_utilisateur = requete.get("donnee")
 
+            if not informations_utilisateur or not all(
+                key in informations_utilisateur
+                for key in ["email", "mdp", "nom", "prenom"]
+            ):
+                return json.dumps(
+                    {
+                        "type_message": "reponse",
+                        "type_action": "CREATION_COMPTE",
+                        "code_erreur": 400,  # Requête mal formulée (champs manquants)
+                        "donnee": None,
+                    }
+                )
+            email = informations_utilisateur["email"]
+            mdp = informations_utilisateur["mdp"]
+            nom = informations_utilisateur["nom"]
+            prenom = informations_utilisateur["prenom"]
             # Si l'utilisateur existe déjà
             if any(user for user in annuaire if user["Information"]["Email"] == email):
                 return json.dumps(
                     {
                         "type_message": "reponse",
                         "type_action": "CREATION_COMPTE",
-                        "code_erreur": 405,
+                        "code_erreur": 405,  # Compte déjà existant
                         "donnee": None,
                     }
                 )
@@ -185,7 +198,7 @@ def traiter_requete(data, annuaire):
                     "type_message": "reponse",
                     "type_action": "CREATION_COMPTE",
                     "code_erreur": "0",  # Pas d'erreur
-                    "donnee": nouvel_utilisateur,
+                    "donnee": {"id_client": nouvel_utilisateur["Id"]},
                 }
             )
 
