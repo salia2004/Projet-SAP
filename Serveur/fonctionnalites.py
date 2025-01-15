@@ -62,7 +62,6 @@ def traiter_requete(data, annuaire):
     try:
         # Convertir la chaîne reçue en un objet Requete
         requete = json.loads(data)
-
         if requete["type_action"].upper() == "CONNEXION":
             # Traiter une requête de connexion
             email = requete["donnee"]["email"]
@@ -98,19 +97,14 @@ def traiter_requete(data, annuaire):
                     "type_action": "CONNEXION",
                     "code_erreur": "0",  # Pas d'erreur
                     "donnee": {"id": utilisateur["Id"]},
-                }
-            )
-
-        elif requete["type_action"].upper() == "CONSULTER_CONTACT":
+                } )
+        elif requete["type_action"] == "CONSULTER_CONTACT":
             # Traiter une requête de consultation de contact
             id_client = requete["identifiant"]  # id client
             nom = requete["donnee"]["nom"]
             prenom = requete["donnee"]["prenom"]
 
-            utilisateur = next(
-                (user for user in annuaire if user["Id"] == id_client), None
-            )
-
+            utilisateur = next((user for user in annuaire if user["Id"] == id_client), None)
             if not utilisateur:
                 return json.dumps(
                     {
@@ -120,16 +114,11 @@ def traiter_requete(data, annuaire):
                         "donnee": None,
                     }
                 )
-
-            contact = next(
-                (
-                    c
-                    for c in utilisateur["Annuaire_contact"]
-                    if c["Nom"] == nom and c["Prenom"] == prenom
-                ),
-                None,
-            )
-
+            print(utilisateur["Annuaire_contact"])
+            contact = []
+            for c in utilisateur["Annuaire_contact"] :
+                if c["Nom"].strip().lower() == nom.strip().lower() and c["Prenom"].strip().lower() == prenom.strip().lower():
+                    contact.append(c)
             if not contact:
                 return json.dumps(
                     {
@@ -137,9 +126,7 @@ def traiter_requete(data, annuaire):
                         "type_action": "CONSULTER_CONTACT",
                         "code_erreur": 404,  # Contact non trouvé
                         "donnee": None,
-                    }
-                )
-
+                    })
             # Contact trouvé
             return json.dumps(
                 {
@@ -206,17 +193,24 @@ def traiter_requete(data, annuaire):
         elif requete["type_action"].upper() == "AJOUT_CONTACT":
             # Traiter une requête d'ajout de contact
             return json.dumps(ajouter_contact(requete, annuaire))
-        # Maybe faire un dernier elif porules autre cas et dire genre focnitonnaliter indissponible
-
-        # Si l'action n'est pas reconnue
-        return json.dumps(
-            {
+        
+        elif requete["type_action"].upper() == "DECONNEXION":
+            print(f"Déconnexion demandée par le client {requete['identifiant']}")
+            return json.dumps({
                 "type_message": "reponse",
-                "type_action": requete["type_action"],
-                "code_erreur": 400,  # Requête mal formulée
+                "type_action": "DECONNEXION",
+                "code_erreur": "0",  # Pas d'erreur
                 "donnee": None,
-            }
-        )
+            })
+
+        else:
+            # Si l'action n'est pas reconnue
+            return json.dumps({
+                    "type_message": "reponse",
+                    "type_action": requete["type_action"],
+                    "code_erreur": 400,  # Requête mal formulée
+                    "donnee": None,
+                })
 
     except Exception as e:
         print(f"Erreur lors du traitement de la requête : {e}")

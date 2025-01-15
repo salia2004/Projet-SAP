@@ -7,7 +7,7 @@ def client():
     # Adresse IP du serveur provisoire
     hote = "127.0.0.1"
     # Port du serveur
-    port = 12345
+    port = 12344
     id_client = " "  # identifiant du clien pour les prochaines manipulaitons 
     try:
         # Connexion au serveur
@@ -16,6 +16,7 @@ def client():
 
         # Connexion au compte utilisateur ou administrateur
         while True:
+            print("\n")
             choix_initial = afficher_menu_initial()
             if choix_initial == 1:
                 # Connexion compte administrateur
@@ -42,7 +43,7 @@ def client():
 
             elif choix_initial == 2:
                 # Connexion autant qu'utilisateur
-                print("Connexion autant qu'utilisateur : ")
+                print("Connexion en tant qu'utilisateur : ")
                 res, id = connexion_compte(client_socket)
                 if res:
                     # CONNEXION CLIENT
@@ -75,22 +76,39 @@ def client():
                             if reponse["code_erreur"] == "0":
                                 afficher_info(reponse["donnee"])
                             else:
-                                message_erreur = interprete_code_erreur(
-                                    int(reponse["code_erreur"])
-                                )
-                                print(
-                                    f"Erreur ({reponse['code_erreur']}) : {message_erreur}"
-                                )
+                                message_erreur = interprete_code_erreur(int(reponse["code_erreur"]))
+                                print(f"Erreur ({reponse['code_erreur']}) : {message_erreur}")
                         elif choix == 6:
                             print("Consulter l'annuaire d'une tiers personne")
                         elif choix == 7:
                             print("Donner une Autorisation à un Contact")
                         elif choix == 8:
-                            print("Déconnexion")
-                            break
+                            print("Déconnexion...")
+                            try:
+                                # Préparer et envoyer une requête de déconnexion
+                                requete = {
+                                    "type_message": "requête",
+                                    "type_action": "DECONNEXION",
+                                    "identifiant": id_client,
+                                    "donnee": None,
+                                }
+                                client_socket.send(json.dumps(requete).encode("utf-8"))
+                                
+                                # Recevoir la confirmation de déconnexion
+                                reponse = json.loads(client_socket.recv(1024).decode("utf-8"))
+                                if reponse["code_erreur"] == "0":
+                                    print("Déconnexion réussie. Merci pour votre visite.")
+                                else:
+                                    print("Erreur lors de la déconnexion.")
+                            except Exception as e:
+                                print(f"Erreur lors de la tentative de déconnexion : {e}")
+                            break  # Quitte la boucle principale
+                        
                         else:
                             print("Choix invalide. Veuillez réessayer.")
-
+            elif choix_initial == 3:
+                print("Merci pour votre visite")
+                break
             else:
                 print("Choix invalide. Veuillez réessayer.")
 

@@ -12,11 +12,11 @@
         "Utilisateurs_autorise": [],
         "Annuaire_contact": [
             {
-                "nom": "x",
-                "prenom": "y",
-                "email": "xy@annuaire.com",
-                "adresse_postale": "31400",
-                "numero_telephone": "01020304"
+                "Nom": "x",
+                "Prenom": "y",
+                "Email": "xy@annuaire.com",
+                "Adresse postale": "31400",
+                "Numéro de téléphone": "01020304"
             }
         ]
     },
@@ -45,6 +45,13 @@
                 "Email": "traore.fatoumata@contact.com",
                 "Adresse postale": "67 chemin des Écoliers, Nice, 24330",
                 "Numéro de téléphone": "0643415028"
+            },
+            {
+                "Nom": "Traore",
+                "Prenom": "Fatoumata",
+                "Email": "traore-fatou@annuaire.com",
+                "Adresse postale": "6 rue du marchall , 87699",
+                "Numéro de téléphone": "0789654732"
             }
         ]
     },
@@ -122,6 +129,13 @@
                 "Email": "dupont.amina@contact.com",
                 "Adresse postale": "31 chemin des Écoliers, Paris, 53787",
                 "Numéro de téléphone": "0679078671"
+            },
+            {
+                "Nom": "Didiane",
+                "Prenom": "Aminata",
+                "Email": "didiane-aminata@gmail.com",
+                "Adresse postale": "7 avenue des mars 31000",
+                "Numéro de téléphone": "0567438273"
             }
         ]
     },
@@ -317,6 +331,17 @@
             "Mdp": "PJ,_-kjh088",
             "Nom": "Dupont",
             "Prenom": "Anna"
+        },
+        "Utilisateurs_autorise": [],
+        "Annuaire_contact": []
+    },
+    {
+        "Id": 12,
+        "Information": {
+            "Email": "fatoumata78@univ-tlse3.fr",
+            "Mdp": "qwerty",
+            "Nom": "Traore",
+            "Prenom": "Fatoumata salia"
         },
         "Utilisateurs_autorise": [],
         "Annuaire_contact": []

@@ -16,6 +16,7 @@ def afficher_menu_initial():
         print(" ------ Menu Initial ------ \n\n")
         print("1- Se connecter à un compte administrateur")
         print("2- Se connecter à un compte utilisateur")
+        print("3- Quitter l'application")
         choix = int(input("Veuillez renseigner votre choix : "))
         return choix
     except ValueError:
@@ -61,13 +62,14 @@ Affiche les informations d'un contact de manière claire et structurée.
 
 def afficher_info(contact):
     print("\n------ Informations du Contact ------")
-    print(f"Nom                : {contact.get('Nom', 'Non spécifié')}")
-    print(f"Prénom             : {contact.get('Prenom', 'Non spécifié')}")
-    print(f"Email              : {contact.get('Email', 'Non spécifié')}")
-    print(f"Adresse postale    : {contact.get('Adresse postale', 'Non spécifié')}")
-    print(
-        f"Numéro de téléphone: {contact.get('Numéro de téléphone', 'Non spécifié')}\n"
-    )
+    for elem in contact:
+        print(f"Nom                : {elem.get('Nom', 'Non spécifié')}")
+        print(f"Prénom             : {elem.get('Prenom', 'Non spécifié')}")
+        print(f"Email              : {elem.get('Email', 'Non spécifié')}")
+        print(f"Adresse postale    : {elem.get('Adresse postale', 'Non spécifié')}")
+        print(
+            f"Numéro de téléphone: {elem.get('Numéro de téléphone', 'Non spécifié')}\n"
+        )
 
 
 # ------------------------------------------------------
@@ -132,8 +134,6 @@ def connexion_compte(client_socket):
     if compteur >= 3:
         return False, " "
     return fin, id
-
-
 """
 Fonctionnalité recherche_contact 
 Objectif: Permet a un utilisateur de rechercher un contact de son annuaire en reseingnant les information du contact (Nom et Prenom)
@@ -193,11 +193,11 @@ def ajouter_contact(socket, id):
             "type_action": "AJOUT_CONTACT",
             "identifiant": id,
             "donnee": {
-                "nom": nom,
-                "prenom": prenom,
-                "email": email,
-                "adresse_postale": adresse_postale,
-                "numero_telephone": numero_telephone,
+                "Nom": nom,
+                "Prenom": prenom,
+                "Email": email,
+                "Adresse postale": adresse_postale,
+                "Numéro de téléphone": numero_telephone,
             },
             "code_erreur": None,
         }
