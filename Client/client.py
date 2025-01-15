@@ -8,7 +8,7 @@ def client():
     hote = "127.0.0.1"
     # Port du serveur
     port = 12345
-    id_client = " "  # identifiant du clien pour les prochaines manipulaitons ############## Est-ce qu'il sert à qlq chose ?
+    id_client = " "  # identifiant du clien pour les prochaines manipulaitons ############## Est-ce qu'il sert à qlq chose ?##oui pour recchercher contact pour identifier le client aupres du serveur
     try:
         # Connexion au serveur
         client_socket.connect((hote, port))
@@ -29,7 +29,6 @@ def client():
 
             elif choix_initial == 2:
                 res, id = connexion_compte(client_socket)
-                print(res)
                 if res:
                     # CONNEXION CLIENT
                     id_client = id

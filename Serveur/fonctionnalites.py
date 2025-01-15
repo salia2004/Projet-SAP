@@ -188,7 +188,6 @@ def traiter_requete(data, annuaire):
                     "donnee": nouvel_utilisateur,
                 }
             )
-
         elif requete["type_action"].upper() == "AJOUT_CONTACT":
             # Traiter une requête d'ajout de contact
             return json.dumps(ajouter_contact(requete, annuaire))
@@ -221,7 +220,6 @@ Fonctionnalité : AJOUT_CONTACT
 Objectif : Ajouter un nouveau contact dans l'annuaire d'un utilisateur spécifique.
 Auteur : [MAIGA Aminata Alidji]
 """
-
 
 def ajouter_contact(data, annuaire):
     """
