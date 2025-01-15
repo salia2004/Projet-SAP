@@ -1,5 +1,6 @@
 # Projet : Service d’Annuaire Partagé
 
+<<<<<<< HEAD
 ## Description du Projet
 Ce projet consiste à développer une application distribuée basée sur une architecture client-serveur pour 
 la gestion d’annuaires partagés. Chaque utilisateur dispose d’un compte utilisateur lié à son propre 

@@ -8,72 +8,89 @@ def client():
     hote = "127.0.0.1"
     # Port du serveur
     port = 12345
-    id_client = " "  # identifiant du clien pour les prochaines manipulaitons ############## Est-ce qu'il sert à qlq chose ?##oui pour recchercher contact pour identifier le client aupres du serveur
+    id_client = " "  # identifiant du clien pour les prochaines manipulaitons 
     try:
         # Connexion au serveur
         client_socket.connect((hote, port))
         print(f"Connecté au serveur {hote}:{port}")
 
-        # Connexion a son compte ou creation de compte utilisateur par l'administrateur
+        # Connexion au compte utilisateur ou administrateur
         while True:
             choix_initial = afficher_menu_initial()
             if choix_initial == 1:
-                # CREATION DE COMPTE
-                res, id_client = creation_compte(client_socket)
-                if res:
-                    # CREATION COMPTE
-                    print("Le compte utilisateur a été créé avec succès.")
+                # Connexion compte administrateur
+                print("Connexion autant qu'administrateur : ")
+                res, id = connexion_compte(client_socket)
+                # Vérification de si l'utilisateur est bien l'administrateur
+                if id != 1:
+                    print("Le compte saisie n'est pas un compte administrateur !")
                 else:
-                    print("Le compte n'a pas pu être créé.")
-                continue
+                    # Si c'est bien un administrateur
+                    while True:
+                        choix_administrateur = afficher_menu_administrateur()
+                        if choix_administrateur == 1:
+                            res, id_client = creation_compte(client_socket)
+                            if res:
+                                # CREATION COMPTE
+                                print("Le compte utilisateur a été créé avec succès.")
+                            else:
+                                print("Le compte n'a pas pu être créé.")
+                        if choix_administrateur == 4:
+                            print("Déconnexion")
+                            break
+                        continue
 
             elif choix_initial == 2:
+                # Connexion autant qu'utilisateur
+                print("Connexion autant qu'utilisateur : ")
                 res, id = connexion_compte(client_socket)
                 if res:
                     # CONNEXION CLIENT
                     id_client = id
-                    break
-            else:
-                print("Choix invalide. Veuillez réessayer.")
 
-        # Affichage du menu principal après connexion
-        while True:
-            choix = afficher_menu()
+                    # Affichage du menu principal après connexion
+                    while True:
+                        # Choix de l'action à effectuer
+                        choix = afficher_menu()
 
-            if choix == 1:
-                print("Ajouter d'un contact à mon annuaire")
-                ajouter_contact(client_socket, id_client)
-            elif choix == 2:
-                print("Modification d'un contact de mon annuaire")
-            elif choix == 3:
-                print("Supprimer un contact de mon annuaire")
-            elif choix == 4:
-                print("Consulter mon annuaire")
-            elif choix == 5:
+                        if choix == 1:
+                            print("Ajouter d'un contact à mon annuaire")
+                            ajouter_contact(client_socket, id_client)
+                        elif choix == 2:
+                            print("Modification d'un contact de mon annuaire")
+                        elif choix == 3:
+                            print("Supprimer un contact de mon annuaire")
+                        elif choix == 4:
+                            print("Consulter mon annuaire")
+                        elif choix == 5:
+                            print(
+                                "Vous voulez consulter les information d'un contact de votre annuaire:"
+                            )
+                            Nom = str(input("Veuillez saisir son nom :"))
+                            Prenom = str(input("Veuillez saisir son prenom :"))
+                            reponse = recherche_contact(
+                                Nom, Prenom, client_socket, id
+                            )  # emmagasiner l'id dans le code
+                            # Traiter la réponse reçue
+                            if reponse["code_erreur"] == "0":
+                                afficher_info(reponse["donnee"])
+                            else:
+                                message_erreur = interprete_code_erreur(
+                                    int(reponse["code_erreur"])
+                                )
+                                print(
+                                    f"Erreur ({reponse['code_erreur']}) : {message_erreur}"
+                                )
+                        elif choix == 6:
+                            print("Consulter l'annuaire d'une tiers personne")
+                        elif choix == 7:
+                            print("Donner une Autorisation à un Contact")
+                        elif choix == 8:
+                            print("Déconnexion")
+                            break
+                        else:
+                            print("Choix invalide. Veuillez réessayer.")
 
-                print(
-                    "Vous voulez consulter les information d'un contact de votre annuaire:"
-                )
-                Nom = str(input("Veuillez saisir son nom :"))
-                Prenom = str(input("Veuillez saisir son prenom :"))
-                reponse = recherche_contact(
-                    Nom, Prenom, client_socket, id
-                )  # emmagasiner l'id dans le code
-                # Traiter la réponse reçue
-                if reponse["code_erreur"] == "0":
-                    afficher_info(reponse["donnee"])
-                else:
-                    message_erreur = interprete_code_erreur(int(reponse["code_erreur"]))
-                    print(f"Erreur ({reponse['code_erreur']}) : {message_erreur}")
-            elif choix == 6:
-                print("Consulter l'annuaire d'une tiers personne")
-                # ccode/fonction
-            elif choix == 7:
-                print("Donner une Autorisation à un Contact")
-                # ccode/fonction
-            elif choix == 8:
-                print("Déconnexion")
-                break
             else:
                 print("Choix invalide. Veuillez réessayer.")
 

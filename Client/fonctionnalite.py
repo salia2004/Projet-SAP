@@ -12,25 +12,45 @@ def demander_identifiants():
 
 
 def afficher_menu_initial():
-    print(" ------ Menu Initial ------ \n\n")
-    print("1- Créer un compte")
-    print("2- Se connecter à un compte")
-    choix = int(input("Veuillez renseigner votre choix : "))
-    return choix
+    try:
+        print(" ------ Menu Initial ------ \n\n")
+        print("1- Se connecter à un compte administrateur")
+        print("2- Se connecter à un compte utilisateur")
+        choix = int(input("Veuillez renseigner votre choix : "))
+        return choix
+    except ValueError:
+        print("Veuillez entrer un nombre entier.")
 
 
 def afficher_menu():
-    print(" ------ Menu principale ------ \n\n")
-    print("1- Ajouter un contact à mon annuaire")
-    print("2- Modifier un contact de mon annuaire")
-    print("3- Supprimer un contact de mon annuaire")
-    print("4- Consulter mon annuaire")
-    print("5- Consulter un contact spécifique de mon annuaire")
-    print("6- Consulter l'annuaire d'une tiers personne")
-    print("7- Donner une Autorisation à un Contact ")
-    print("8- Deconnexion")
-    choix = int(input("Veuillez renseignez votre choix : "))
-    return choix
+    try:
+        print(" ------ Menu principale ------ \n\n")
+        print("1- Ajouter un contact à mon annuaire")
+        print("2- Modifier un contact de mon annuaire")
+        print("3- Supprimer un contact de mon annuaire")
+        print("4- Consulter mon annuaire")
+        print("5- Consulter un contact spécifique de mon annuaire")
+        print("6- Consulter l'annuaire d'une tiers personne")
+        print("7- Donner une Autorisation à un Contact ")
+        print("8- Deconnexion")
+        choix = int(input("Veuillez renseignez votre choix : "))
+        return choix
+    except ValueError:
+        print("Veuillez entrer un nombre entier.")
+
+
+def afficher_menu_administrateur():
+    try:
+        print(" ------ Menu Administrateur ------ \n\n")
+        print("1- Ajouter un compte utilisateur")
+        print("2- Modifier un compte utilisateur")
+        print("3- Supprimer un compte utilisateur")
+        print("4- Deconnexion")
+
+        choix = int(input("Veuillez renseignez votre choix : "))
+        return choix
+    except ValueError:
+        print("Veuillez entrer un nombre entier.")
 
 
 """
@@ -170,7 +190,7 @@ def ajouter_contact(socket, id):
         # Création de la requête à envoyer au serveur
         requete = {
             "type_message": "requete",
-            "type_action": "AJOUTER_CONTACT",
+            "type_action": "AJOUT_CONTACT",
             "identifiant": id,
             "donnee": {
                 "nom": nom,
@@ -210,14 +230,6 @@ Auteur : Amina DIDANE
 
 def creation_compte(socket):
     try:
-        # Connexion autant qu'administrateur
-        print("Connexion autant qu'administrateur : ")
-        res, id = connexion_compte(socket)
-        # Vérification de si l'utilisateur est bien l'administrateur
-        if id != 1:
-            print("La création de compte est réservé à l'administrateur.")
-            return False, None
-
         # Collecte des informations de l'utilisateur à ajouter
         print("\n--- Création utilisateur ---")
         nom = input("Nom : ")
@@ -228,16 +240,14 @@ def creation_compte(socket):
         # Création de la requête à envoyer au serveur
         requete = {
             "type_message": "requete",
-            "type_action": "CREATION_UTILISATEUR",  ################## vérifier le nom
+            "type_action": "CREATION_COMPTE",
             "identifiant": None,
             "donnee": {
-                "Information": {
-                    "Nom": nom,
-                    "Prenom": prenom,
-                    "Email": email,
-                    "Mdp": mot_de_passe,
-                },
-                "Annuaire_contact": [],
+                "nom": nom,
+                "prenom": prenom,
+                "email": email,
+                "mdp": mot_de_passe,
+                "annuaire_contact": [],
             },
             "code_erreur": None,
         }
@@ -251,13 +261,11 @@ def creation_compte(socket):
 
         # Traitement de la réponse
         if reponse["code_erreur"] == "0":
-            print("Utilisateur créé avec succès !")
-            print(f"L'identifiant de l'utilisateur est : {reponse['id_client']}")
-            return True, reponse["id_client"]
+            print("Utilisateur ajouté avec succès !")
+            return True, reponse["donnee"]["id_client"]
         else:
             message_erreur = interprete_code_erreur(int(reponse["code_erreur"]))
             print(f"Erreur ({reponse['code_erreur']}) : {message_erreur}")
             return False, None
     except Exception as e:
-        print(f"Erreur lors de la création de l'utilisateur : {e}")
-        return False, None
+        print(f"Erreur lors de la création d'un compte utilisateur : {e}")

@@ -37,8 +37,9 @@ Objectif : Sauvegarder l'annuaire actuel dans un fichier JSON afin de conserver 
 
 
 def sauvegarder_annuaire(annuaire, fichier="annuaire.json"):
+    chemin_fichier = os.path.join(os.path.dirname(__file__), fichier)
     try:
-        with open(fichier, "w", encoding="utf-8") as f:
+        with open(chemin_fichier, "w", encoding="utf-8") as f:
             json.dump(annuaire, f, ensure_ascii=False, indent=4)
             print("Annuaire sauvegardé avec succès.")
     except Exception as e:
@@ -151,18 +152,31 @@ def traiter_requete(data, annuaire):
 
         elif requete["type_action"].upper() == "CREATION_COMPTE":
             # Traiter une requête de création utilisateur
-            email = requete["donnee"]["email"]
-            mdp = requete["donnee"]["mdp"]
-            nom = requete["donnee"]["nom"]
-            prenom = requete["donnee"]["prenom"]
+            informations_utilisateur = requete.get("donnee")
 
+            if not informations_utilisateur or not all(
+                key in informations_utilisateur
+                for key in ["email", "mdp", "nom", "prenom"]
+            ):
+                return json.dumps(
+                    {
+                        "type_message": "reponse",
+                        "type_action": "CREATION_COMPTE",
+                        "code_erreur": 400,  # Requête mal formulée (champs manquants)
+                        "donnee": None,
+                    }
+                )
+            email = informations_utilisateur["email"]
+            mdp = informations_utilisateur["mdp"]
+            nom = informations_utilisateur["nom"]
+            prenom = informations_utilisateur["prenom"]
             # Si l'utilisateur existe déjà
             if any(user for user in annuaire if user["Information"]["Email"] == email):
                 return json.dumps(
                     {
                         "type_message": "reponse",
                         "type_action": "CREATION_COMPTE",
-                        "code_erreur": 405,
+                        "code_erreur": 405,  # Compte déjà existant
                         "donnee": None,
                     }
                 )
@@ -175,6 +189,7 @@ def traiter_requete(data, annuaire):
                     "Nom": nom,
                     "Prenom": prenom,
                 },
+                "Utilisateurs_autorise": [],  # La liste des utilisateurs autorisé à la lecture est vide au début
                 "Annuaire_contact": [],  # L'annuaire de contacts de l'utilisateur est vide au début
             }
             annuaire.append(nouvel_utilisateur)
@@ -185,7 +200,7 @@ def traiter_requete(data, annuaire):
                     "type_message": "reponse",
                     "type_action": "CREATION_COMPTE",
                     "code_erreur": "0",  # Pas d'erreur
-                    "donnee": nouvel_utilisateur,
+                    "donnee": {"id_client": nouvel_utilisateur["Id"]},
                 }
             )
         elif requete["type_action"].upper() == "AJOUT_CONTACT":
@@ -229,51 +244,41 @@ def ajouter_contact(data, annuaire):
     :param annuaire: Liste représentant l'annuaire complet.
     :return: Réponse sous forme de dictionnaire.
     """
-    try:
-        # Extraire les données de la requête
-        id_utilisateur = data.get("identifiant")
-        contact = data.get("donnee")
+    # Extraire les données de la requête
+    id_utilisateur = data.get("identifiant")
+    contact = data.get("donnee")
 
-        # Vérifier si l'utilisateur existe dans l'annuaire
-        utilisateur = next(
-            (user for user in annuaire if user["Id"] == id_utilisateur), None
-        )
-        if not utilisateur:
+    # Vérifier si l'utilisateur existe dans l'annuaire
+    utilisateur = next(
+        (user for user in annuaire if user["Id"] == id_utilisateur), None
+    )
+    if not utilisateur:
+        return {
+            "type_message": "reponse",
+            "type_action": "AJOUT_CONTACT",
+            "code_erreur": 409,  # Utilisateur non trouvé
+            "donnee": None,
+        }
+
+    # Vérifier si le contact existe déjà dans l'annuaire de l'utilisateur
+    for c in utilisateur["Annuaire_contact"]:
+        if c["Email"] == contact["email"]:
             return {
                 "type_message": "reponse",
                 "type_action": "AJOUT_CONTACT",
-                "code_erreur": 409,  # Utilisateur non trouvé
+                "code_erreur": 403,  # Contact déjà présent
                 "donnee": None,
             }
 
-        # Vérifier si le contact existe déjà dans l'annuaire de l'utilisateur
-        for c in utilisateur["Annuaire_contact"]:
-            if c["Email"] == contact["email"]:
-                return {
-                    "type_message": "reponse",
-                    "type_action": "AJOUT_CONTACT",
-                    "code_erreur": 403,  # Contact déjà présent
-                    "donnee": None,
-                }
+    # Ajouter le contact à l'annuaire
+    utilisateur["Annuaire_contact"].append(contact)
 
-        # Ajouter le contact à l'annuaire
-        utilisateur["Annuaire_contact"].append(contact)
+    # Sauvegarder les modifications dans le fichier JSON
+    sauvegarder_annuaire(annuaire)
 
-        # Sauvegarder les modifications dans le fichier JSON
-        sauvegarder_annuaire(annuaire)
-
-        return {
-            "type_message": "reponse",
-            "type_action": "AJOUT_CONTACT",
-            "code_erreur": "0",  # Pas d'erreur
-            "donnee": contact,
-        }
-
-    except Exception as e:
-        print(f"Erreur lors de l'ajout du contact : {e}")
-        return {
-            "type_message": "reponse",
-            "type_action": "AJOUT_CONTACT",
-            "code_erreur": 400,  # Requête mal formulée
-            "donnee": None,
-        }
+    return {
+        "type_message": "reponse",
+        "type_action": "AJOUT_CONTACT",
+        "code_erreur": "0",  # Pas d'erreur
+        "donnee": contact,
+    }
