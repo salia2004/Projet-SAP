@@ -65,7 +65,6 @@ Objectif : Analyser et traiter une requête reçue du client en fonction de son 
 
 def traiter_requete(data, annuaire):
     import json
-
     try:
         # Convertir la chaîne reçue en un objet Requete
         requete = json.loads(data)
@@ -113,7 +112,6 @@ def traiter_requete(data, annuaire):
             #Normaliser les parametres de recherche 
             nom_normalise = enlever_accents(nom)
             prenom_normalise = enlever_accents(prenom)
-
             if nom=="" and prenom=="":
                 return json.dumps({
                     "type_message": "reponse",
@@ -121,6 +119,7 @@ def traiter_requete(data, annuaire):
                     "code_erreur": 400,  # Requête mal formulée
                     "donnee": None,
                 })
+            
             utilisateur = next((user for user in annuaire if user["Id"] == id_client), None)
             if not utilisateur:
                 return json.dumps({   
@@ -128,6 +127,7 @@ def traiter_requete(data, annuaire):
                      "type_action": "CONSULTER_CONTACT",
                     "code_erreur": 409,  # Utilisateur non trouvé
                     "donnee": None,})
+            
             contact = []
             # Vérification des paramètres
             for c in utilisateur.get("Annuaire_contact", []):
@@ -153,13 +153,11 @@ def traiter_requete(data, annuaire):
                         "donnee": None,
                     })
             # Contact trouvé 
-            return json.dumps(
-                {
+            return json.dumps({
                     "type_message": "reponse",
                     "type_action": "CONSULTER_CONTACT",
                     "code_erreur": "0",  # Pas d'erreur
-                    "donnee": contact,
-                })
+                    "donnee": contact,})
 
         elif requete["type_action"].upper() == "CREATION_COMPTE":
             # Traiter une requête de création utilisateur
@@ -265,22 +263,15 @@ def ajouter_contact(data, annuaire):
     # Extraire les données de la requête
     id_utilisateur = data.get("identifiant")
     contact = data.get("donnee")
+    print(contact)
 
     # Vérifier si l'utilisateur existe dans l'annuaire
     utilisateur = next(
-        (user for user in annuaire if user["Id"] == id_utilisateur), None
-    )
-    if not utilisateur:
-        return {
-            "type_message": "reponse",
-            "type_action": "AJOUT_CONTACT",
-            "code_erreur": 409,  # Utilisateur non trouvé
-            "donnee": None,
-        }
+        (user for user in annuaire if user["Id"] == id_utilisateur), None)
 
     # Vérifier si le contact existe déjà dans l'annuaire de l'utilisateur
     for c in utilisateur["Annuaire_contact"]:
-        if c["Email"] == contact["email"]:
+        if c["Email"] == contact["Email"]:
             return {
                 "type_message": "reponse",
                 "type_action": "AJOUT_CONTACT",
