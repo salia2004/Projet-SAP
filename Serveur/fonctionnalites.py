@@ -1,5 +1,12 @@
 import json
 import os
+import unicodedata
+
+"""Supprime les accents d'une chaîne de caractères."""
+def enlever_accents(texte):
+    if texte is None:
+        return ""
+    return ''.join(c for c in unicodedata.normalize('NFD', texte) if unicodedata.category(c) != 'Mn').strip().lower()
 
 """
 Fonctionnalité : CHARGER_ANNUAIRE
@@ -103,22 +110,40 @@ def traiter_requete(data, annuaire):
             id_client = requete["identifiant"]  # id client
             nom = requete["donnee"]["nom"]
             prenom = requete["donnee"]["prenom"]
+            #Normaliser les parametres de recherche 
+            nom_normalise = enlever_accents(nom)
+            prenom_normalise = enlever_accents(prenom)
 
+            if nom=="" and prenom=="":
+                return json.dumps({
+                    "type_message": "reponse",
+                    "type_action": requete["type_action"],
+                    "code_erreur": 400,  # Requête mal formulée
+                    "donnee": None,
+                })
             utilisateur = next((user for user in annuaire if user["Id"] == id_client), None)
             if not utilisateur:
-                return json.dumps(
-                    {
-                        "type_message": "reponse",
-                        "type_action": "CONSULTER_CONTACT",
-                        "code_erreur": 409,  # Utilisateur non trouvé
-                        "donnee": None,
-                    }
-                )
-            print(utilisateur["Annuaire_contact"])
+                return json.dumps({   
+                     "type_message": "reponse", 
+                     "type_action": "CONSULTER_CONTACT",
+                    "code_erreur": 409,  # Utilisateur non trouvé
+                    "donnee": None,})
             contact = []
-            for c in utilisateur["Annuaire_contact"] :
-                if c["Nom"].strip().lower() == nom.strip().lower() and c["Prenom"].strip().lower() == prenom.strip().lower():
-                    contact.append(c)
+            # Vérification des paramètres
+            for c in utilisateur.get("Annuaire_contact", []):
+                nom_contact = enlever_accents(c.get("Nom", ""))
+                prenom_contact = enlever_accents(c.get("Prenom", ""))
+
+                # Recherche selon les conditions
+                if nom == "":
+                    if prenom_contact == prenom_normalise:
+                        contact.append(c)
+                elif prenom == "":
+                    if nom_contact == nom_normalise:
+                        contact.append(c)
+                else:
+                    if nom_contact == nom_normalise and prenom_contact == prenom_normalise:
+                        contact.append(c)
             if not contact:
                 return json.dumps(
                     {
@@ -127,15 +152,14 @@ def traiter_requete(data, annuaire):
                         "code_erreur": 404,  # Contact non trouvé
                         "donnee": None,
                     })
-            # Contact trouvé
+            # Contact trouvé 
             return json.dumps(
                 {
                     "type_message": "reponse",
                     "type_action": "CONSULTER_CONTACT",
                     "code_erreur": "0",  # Pas d'erreur
                     "donnee": contact,
-                }
-            )
+                })
 
         elif requete["type_action"].upper() == "CREATION_COMPTE":
             # Traiter une requête de création utilisateur
@@ -199,7 +223,7 @@ def traiter_requete(data, annuaire):
             return json.dumps({
                 "type_message": "reponse",
                 "type_action": "DECONNEXION",
-                "code_erreur": "0",  # Pas d'erreur
+                "code_erreur": 0,  # Pas d'erreur
                 "donnee": None,
             })
 
