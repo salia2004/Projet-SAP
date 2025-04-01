@@ -1,4 +1,4 @@
-# Projet : Service d’Annuaire Partagé
+### Projet : Service d’Annuaire Partagé
 
 <<<<<<< HEAD
 ## Description du Projet
